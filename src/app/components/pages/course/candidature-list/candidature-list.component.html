@@ -1,0 +1,33 @@
+<div class="page-content">
+    <div class="container">
+      <h3>Mes Candidatures</h3>
+  
+      <div *ngIf="loading">Chargement...</div>
+      <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+  
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Référence</th>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Email</th>
+            <th>CV</th>
+            <th>Spécialité</th>
+            <th>Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let candidature of candidatures">
+            <td>{{ candidature.candidatId }}</td>
+            <td>{{ candidature.nom }}</td>
+            <td>{{ candidature.prenom }}</td>
+            <td>{{ candidature.email }}</td>
+            <td><a [href]="candidature.cv" target="_blank">Voir CV</a></td>
+            <td>{{ candidature.specialite }}</td>
+            <td>{{ candidature.statut }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
