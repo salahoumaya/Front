@@ -27,8 +27,8 @@ export class InstructorWishlistComponent {
     });
   }
 
-  addEvent(title: string, description: string, scheduledAt: string) {
-    const newEvent: Event = { title, description, scheduledAt: new Date(scheduledAt) };
+  addEvent(title: string, description: string, scheduledAt: string,capacity: string) {
+    const newEvent: Event = { title, description, scheduledAt: new Date(scheduledAt),capacity: parseInt(capacity, 10) };
     this.eventService.addEvent(newEvent).subscribe(() => {
       this.loadEvents();
     });

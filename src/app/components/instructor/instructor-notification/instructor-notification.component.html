@@ -9,7 +9,14 @@
           <p class="card-text">{{ event.description }}</p>
           <p><strong>Date :</strong> {{ event.scheduledAt | date:'dd/MM/yyyy HH:mm' }}</p>
 
-          <button class="btn btn-primary" (click)="event.eventId ? reserveEvent(event.eventId) : null">
+         
+
+          <!-- QR Code -->
+          <div *ngIf="event.eventId">
+            <p><strong>QR Code :</strong></p>
+            <img [src]="getQRCodeUrl(event.eventId) | async" alt="QR Code" class="qr-code-img" />
+          </div>
+          <button class="btn btn-primary mt-3" (click)="event.eventId ? goToReservation(event.eventId) : null">
             Réserver
           </button>
         </div>

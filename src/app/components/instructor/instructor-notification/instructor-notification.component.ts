@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import { routes } from 'src/app/shared/service/routes/routes';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 import { EventService, Event } from 'src/app/shared/service/event.service';
 
 @Component({
@@ -7,10 +8,10 @@ import { EventService, Event } from 'src/app/shared/service/event.service';
   templateUrl: './instructor-notification.component.html',
   styleUrls: ['./instructor-notification.component.scss']
 })
-export class InstructorNotificationComponent  {
+export class InstructorNotificationComponent implements OnInit {
   events: Event[] = [];
 
-  constructor(private eventService: EventService) {}
+  constructor(private eventService: EventService,private router:Router) {}
 
   ngOnInit(): void {
     this.loadEvents();
@@ -28,16 +29,16 @@ export class InstructorNotificationComponent  {
     );
   }
 
-  // Réserver un événement
-  reserveEvent(eventId: number): void {
-    this.eventService.reserveEvent(eventId).subscribe(
-      () => {
-        alert('Réservation effectuée avec succès !');
-      },
-      (error) => {
-        console.error('Erreur lors de la réservation:', error);
-        alert('Une erreur est survenue lors de la réservation.');
-      }
-    );
-  }
+ 
+
+  // Récupérer l'URL du QR Code pour chaque événement
+  // Remplacez cette méthode :
+getQRCodeUrl(eventId: number): Observable<string> {
+  return this.eventService.getEventQRCodeUrl(eventId);
+}
+// 🔥 Aller à la page de réservation
+goToReservation(eventId: number): void {
+  this.router.navigate(['reserve/:eventId', eventId]);
+}
+
 }

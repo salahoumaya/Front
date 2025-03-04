@@ -45,6 +45,11 @@ const routes: Routes = [
         path: 'instructor-dashboard',
         component: InstructorDashboardComponent,
       },
+    
+      {
+        path: 'i',
+        component: InstructorDashboardComponent,
+      },
       {
         path: 'instructor-earnings',
         component: InstructorEarningsComponent,

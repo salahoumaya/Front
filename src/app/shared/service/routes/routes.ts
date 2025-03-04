@@ -34,6 +34,7 @@ export class routes {
   public static get instructor_reviews(): string {
     return this.instructor + 'instructor-reviews';
   }
+
   public static get instructor_student_grid(): string {
     return this.instructor + 'instructor-student-grid';
   }
@@ -158,6 +159,14 @@ export class routes {
   public static get students_list(): string {
     return this.students + 'student-view/students-list';
   }
+
+      public static get EventList(): string {
+        return this.students +  'student-qa';
+
+      }
+      public static get afficheReservation(): string {
+        return this.students + 'reserve';
+    }
   public static get students_grid(): string {
     return this.students + 'student-view/students-grid';
   }

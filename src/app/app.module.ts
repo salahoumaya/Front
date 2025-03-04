@@ -9,9 +9,13 @@ import { AppComponent } from './app.component';
 import { SharedModule } from './shared/module/shared.module';
 
 import { HttpClientModule } from '@angular/common/http';
+import { AfficheReservationComponent } from './components/student/affiche-reservation/affiche-reservation.component';
+import { StudentComponent } from './components/student/student.component';
+import { StudentModule } from './components/student/student.module';
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+
   ],
   imports: [
     HttpClientModule,

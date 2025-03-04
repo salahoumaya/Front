@@ -14,13 +14,22 @@ import { StudentReviewsComponent } from './student-reviews/student-reviews.compo
 import { StudentReferralComponent } from './student-referral/student-referral.component';
 import { StudentTicketsComponent } from './student-tickets/student-tickets.component';
 import { StudentQuizDetailsComponent } from './student-quiz-details/student-quiz-details.component';
+import { AfficheReservationComponent } from './affiche-reservation/affiche-reservation.component';
+
+import { EventListComponent } from './event-list/event-list.component';
 
 const routes: Routes = [
   {
     path: '',
     component: StudentComponent,
     children: [
+       
       {
+        path: 'students/reserve/:eventId',
+        component: AfficheReservationComponent,
+    },
+      {
+        
         path: 'student-view',
         loadChildren: () =>
           import('./student-view/student-view.module').then(
@@ -35,8 +44,9 @@ const routes: Routes = [
         path: 'view-invoice',
         component: ViewInvoiceComponent,
       },
+     
       { path: 'student-dashboard', component: StudentDashboardComponent },
-      { path: 'student-qa', component: StudentQaComponent },
+      { path: 'student-qa', component:  EventListComponent},
       { path: 'student-quiz', component: StudentQuizComponent },
       { path: 'student-message', component: StudentMessageComponent },
       {

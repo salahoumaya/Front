@@ -1,19 +1,24 @@
 import { Injectable } from '@angular/core';
 import { HttpClient ,HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 
 export interface Event {
   eventId?: number;
   title: string;
   description: string;
   scheduledAt: Date;
+  isFull?: boolean; 
+  capacity?: number;  // ✅ Ajout de la capacité
+
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class EventService {
-  private apiUrl = 'http://localhost:8076/api/events';
+  private apiUrl = 'http://localhost:8076/api/events/admin';
 
   constructor(private http: HttpClient) {}
   private getAuthHeaders() {
@@ -27,15 +32,15 @@ export class EventService {
   }
 
   getUpcomingEvents(): Observable<Event[]> {
-    return this.http.get<Event[]>(`${this.apiUrl}/admin/upcoming`,{ headers: this.getAuthHeaders() }); // ✅ Correction
+    return this.http.get<Event[]>(`${this.apiUrl}/upcoming`,{ headers: this.getAuthHeaders() }); // ✅ Correction
   }
 
   getUpAllEvents(): Observable<Event[]> {
-    return this.http.get<Event[]>(`${this.apiUrl}/admin/all`,{ headers: this.getAuthHeaders() }); // ✅ Correction
+    return this.http.get<Event[]>(`${this.apiUrl}/all`,{ headers: this.getAuthHeaders() }); // ✅ Correction
   }
 
   addEvent(event: Event): Observable<Event> {
-    return this.http.post<Event>(`${this.apiUrl}/admin/create-event`, event,{ headers: this.getAuthHeaders() });
+    return this.http.post<Event>(`${this.apiUrl}/create-event`, event,{ headers: this.getAuthHeaders() });
   }
 
   deleteEvent(id: number): Observable<void> {
@@ -45,16 +50,22 @@ export class EventService {
     const url = `${this.apiUrl}/admin/{id}${id}`;
     return this.http.get<Event>(url);
   }*/
-
+    getEventQRCodeUrl(eventId: number): Observable<string> {
+      return this.http.get(`${this.apiUrl}/qr/${eventId}`, { 
+        headers: this.getAuthHeaders(), 
+        responseType: 'blob' 
+      }).pipe(
+        map((blob: Blob) => URL.createObjectURL(blob))
+      );
+    }
+    
   getEventById(id:number): Observable<any> {
 
-    return this.http.get<any>(this.apiUrl+"/admin/"+id,{ headers: this.getAuthHeaders() });
+    return this.http.get<any>(this.apiUrl+"/"+id,{ headers: this.getAuthHeaders() });
   }
 
   updateEvent(eventId :number,event: Event): Observable<Event> {
-    return this.http.put<Event>(`${this.apiUrl}/admin/update-event/${eventId}`, event,{ headers: this.getAuthHeaders() }); // ✅ Correction
+    return this.http.put<Event>(`${this.apiUrl}/update-event/${eventId}`, event,{ headers: this.getAuthHeaders() }); // ✅ Correction
   }
-  reserveEvent(eventId: number): Observable<any> {
-    return this.http.post(`${this.apiUrl}/reserve/${eventId}`, {}, { headers: this.getAuthHeaders() });
-  }
+ 
 }
