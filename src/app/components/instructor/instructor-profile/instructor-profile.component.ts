@@ -54,7 +54,7 @@ export class InstructorProfileComponent implements OnInit{
           });
         },
         error: () => {
-          this.toastr.error('Erreur lors de l’acceptation de la demande.', 'Erreur', {
+          this.toastr.error('Cette etudiant est accepté dans un autre sujet.', 'Erreur', {
             positionClass: 'toast-top-right',
             timeOut: 5000,
             progressBar: true

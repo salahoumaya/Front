@@ -1,8 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
-import { DataService } from 'src/app/shared/service/data/data.service';
-import { routes } from 'src/app/shared/service/routes/routes';
-import { instructorCourse, instructorCourseList } from 'src/app/models/model';
 import { DemandeStatus, SujetPfe } from 'src/app/models/sujetpfe';
 import { SujetPfeService } from 'src/app/shared/service/sujetpfe/sujetpfe.service';
 import { OuruserService } from 'src/app/shared/service/ouruser/ouruser.service';
@@ -23,24 +19,47 @@ export class SujetpfeBackofficeComponent implements OnInit {
     titre: '',
     description: '',
     technologie: '',
+    image: '',
     demandeStatus: DemandeStatus.PENDING,
-    moderator: null,  // Initialiser à null
-    userAttribue: null,  // Initialiser à null
+    moderator: null,
+    userAttribue: null,
     demandeurs: []
   };
+  // ✅ Variables pour les statistiques
+totalSujets: number = 0;
+sujetsAttribues: number = 0;
+sujetsNonAttribues: number = 0;
+  
+  pourcentageAttribues: number = 0; // Pourcentage des sujets attribués
 
   constructor(private sujetPfeService: SujetPfeService, private ourUserService: OuruserService) {}
 
   ngOnInit(): void {
     this.loadSujets();
-    this.loadModerators(); // Charger les modérateurs lors de l'initialisation
+    this.loadModerators(); 
+    this.loadPourcentageAttribues(); 
   }
 
   loadSujets(): void {
     this.sujetPfeService.getAllSujets().subscribe((data) => {
       this.sujets = data;
-      console.log("this is : ", data);
+      console.log("Liste des sujets : ", data);
+      // ✅ Calcul des statistiques
+this.totalSujets = data.length;
+this.sujetsAttribues = data.filter(s => s.userAttribue != null).length;
+this.sujetsNonAttribues = this.totalSujets - this.sujetsAttribues;
     });
+  }
+
+  loadPourcentageAttribues(): void {
+    this.sujetPfeService.getPourcentageSujetsAttribues().subscribe((pourcentage: number) => {
+      this.pourcentageAttribues = pourcentage;
+      console.log("Pourcentage des sujets attribués :", pourcentage);
+      
+    }, error => {
+      console.error("Erreur lors de la récupération du pourcentage :", error);
+    });
+    
   }
 
   openEditModal(sujet: SujetPfe): void {
@@ -71,16 +90,16 @@ export class SujetpfeBackofficeComponent implements OnInit {
     
     this.sujetPfeService.modifierSujet(this.selectedSujet.id, this.selectedSujet)
       .subscribe(() => {
-        if (this.selectedSujet.moderator && this.selectedSujet.id ) {
+        if (this.selectedSujet.moderator && this.selectedSujet.id) {
           this.sujetPfeService.affecterModerateur(this.selectedSujet.id, this.selectedSujet.moderator.id)
             .subscribe(() => {
               this.loadSujets();  // Recharger la liste des sujets
-              const modal = bootstrap.Modal.getInstance(document.getElementById('addSujetModal'));
-              modal.hide();  // Fermer le modal après l'ajout
+              this.closeEditModal();
             });
+        } else {
+          this.loadSujets();
+          this.closeEditModal();
         }
-        this.loadSujets();
-        this.closeEditModal();
       });
   }
 
@@ -172,20 +191,25 @@ export class SujetpfeBackofficeComponent implements OnInit {
     }
 
     this.sujetPfeService.ajouterSujet(this.newSujet).subscribe((sujetAjoute) => {
-      console.log("this sujet id :", sujetAjoute.id)
       if (this.newSujet.moderator && sujetAjoute.id) {
         this.sujetPfeService.affecterModerateur(sujetAjoute.id, this.newSujet.moderator.id)
           .subscribe(() => {
             this.loadSujets();
-            const modal = bootstrap.Modal.getInstance(document.getElementById('addSujetModal'));
-            modal.hide();
+            this.closeAddModal();
           });
       } else {
         this.loadSujets();
-        const modal = bootstrap.Modal.getInstance(document.getElementById('addSujetModal'));
-        modal.hide();
+        this.closeAddModal();
       }
     });
+  }
+
+  closeAddModal(): void {
+    const modalElement = document.getElementById('addSujetModal');
+    if (modalElement) {
+      const modal = bootstrap.Modal.getInstance(modalElement);
+      modal?.hide();
+    }
   }
 
   loadModerators(): void {

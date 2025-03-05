@@ -84,6 +84,10 @@ export class SujetPfeService {
   getSujetsByModerator(moderatorId: number): Observable<SujetPfe[]> {
     return this.http.get<SujetPfe[]>(`${this.baseUrl}/moderateur/${moderatorId}`);
   }
+
+  getPourcentageSujetsAttribues(): Observable<number> {
+    return this.http.get<number>(`${this.baseUrl}/pourcentage-attribues`);
+  }
   
   
 }
