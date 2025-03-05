@@ -1,23 +1,23 @@
 import { Component, OnInit } from '@angular/core';
 import { CandidatureService } from 'src/app/shared/service/candidature/candidature.service';
-import { Router } from '@angular/router'; // Importez Router
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-add-course', // Assurez-vous que le sélecteur est correct
+  selector: 'app-add-course',
   templateUrl: './add-course.component.html',
   styleUrls: ['./add-course.component.scss']
 })
 export class AddCourseComponent implements OnInit {
 
   candidatures: any[] = [];  // Liste des candidatures
-  newCandidature: any = { nom: '', prenom: '', email: '', specialite: '', statut: '', cvFile: null };  
+  newCandidature: any = { nom: '', prenom: '', email: '', specialite: '', statut: 'EN_ATTENTE', nbr_exp: null };  
   selectedCandidature: any = null;  
   activeIndex: number = 0;  
   errorMessage: string = '';  
   successMessage: string = ''; 
   isClicked: boolean = false; 
 
-  constructor(private candidatureService: CandidatureService, private router: Router) { } // Injectez Router
+  constructor(private candidatureService: CandidatureService, private router: Router) { }
 
   ngOnInit(): void {
     this.loadCandidatures();
@@ -49,11 +49,12 @@ export class AddCourseComponent implements OnInit {
           this.successMessage = 'Candidature envoyée avec succès !';
           this.errorMessage = ''; 
           
-          this.newCandidature = { nom: '', prenom: '', email: '', specialite: '', statut: 'EN_ATTENTE', cvFile: null };
+          // Réinitialiser le formulaire
+          this.newCandidature = { nom: '', prenom: '', email: '', specialite: '', statut: 'EN_ATTENTE', nbr_exp: null };
           form.resetForm();
           this.resetButtonColor();
           
-          // Appel à la méthode pour rediriger vers la liste des candidatures
+          // Rediriger vers la liste des candidatures
           this.goToCandidatureList();
         },
         (error) => {
@@ -68,24 +69,14 @@ export class AddCourseComponent implements OnInit {
     }
   }
 
-  // Ajoutez la méthode onFileSelected pour gérer le changement de fichier
-  onFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      this.newCandidature.cvFile = input.files[0];
-    }
-  }
-
   isValidCandidature(candidature: any): boolean {
-    return candidature.nom && candidature.prenom && candidature.email && candidature.specialite && candidature.statut && candidature.cvFile;
+    return candidature.nom && candidature.prenom && candidature.email && candidature.specialite && candidature.statut && candidature.nbr_exp !== null;
   }
 
-  // Nouvelle méthode pour rediriger vers la liste des candidatures
   goToCandidatureList() {
     this.router.navigate(['/pages/course/course-details']); // Remplacez par le chemin de votre route
   }
 
-  // Réinitialisation de la couleur après 2 secondes
   resetButtonColor() {
     setTimeout(() => {
       this.isClicked = false;

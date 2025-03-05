@@ -57,10 +57,10 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <div class="input-block">
-                                            <label for="cv" class="form-label">CV</label>
-                                            <input type="file" id="cv" (change)="onFileSelected($event)" accept="application/pdf" required>
+                                            <label for="nbr_exp" class="form-label">Nombre d'Expériences</label>
+                                            <input type="number" class="form-control" id="nbr_exp" [(ngModel)]="candidature.nbr_exp" name="nbr_exp" required />
                                         </div>
                                     </div>
                                     <!-- Boutons -->

@@ -35,7 +35,7 @@ export class CourseDetailsComponent implements OnInit {
   }
 
   public onUpdate(candidature: any): void {
-    console.log('onUpdate called with:', candidature); // Affiche bien la candidature
+    console.log('onUpdate called with:', candidature);
     const id = candidature.candidatId; // Assurez-vous que cette propriété existe
     if (id) {
       this.router.navigate(['/student/student-message', id]);
@@ -47,8 +47,6 @@ export class CourseDetailsComponent implements OnInit {
   public getCountByStatus(status: string): number {
     return this.candidatures.filter(c => c.statut === status).length;
   }
-
-  
 
   // Méthode pour supprimer une candidature
   public onDelete(candidatId: number): void {
@@ -65,4 +63,25 @@ export class CourseDetailsComponent implements OnInit {
       );
     }
   }
+
+  public downloadCandidaturePdf(): void {
+    console.log('Tentative de téléchargement du PDF...');
+    this.candidatureService.downloadPdf().subscribe(
+        (response: Blob) => {
+            console.log('PDF reçu, traitement...');
+            const blob = new Blob([response], { type: 'application/pdf' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'candidatures.pdf';
+            a.click();
+            window.URL.revokeObjectURL(url);
+            console.log('Téléchargement terminé.');
+        },
+        error => {
+            console.error('Erreur lors du téléchargement du PDF', error);
+            this.errorMessage = 'Impossible de télécharger le PDF. Veuillez réessayer plus tard.';
+        }
+    );
+}
 }

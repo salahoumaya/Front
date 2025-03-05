@@ -77,7 +77,7 @@ export class routes {
     return this.instructor + 'instructor-linked-account';
   }
   public static get instructor_instructor_profile(): string {
-    return this.instructor + 'instructor-profile';
+    return this.blog + 'blog-details';
   }
   public static get instructor_withdrawal_instructor(): string {
     return this.instructor + 'withdrawal-instructor';
@@ -107,7 +107,7 @@ export class routes {
     return this.instructor + 'instructor-withdraw';
   }
   public static get instructorProfile(): string {
-    return this.instructor + 'instructor-profile';
+    return this.blog + 'blog-details';
   }
   public static get instructorQA(): string {
     return this.instructor + 'instructor-qa';
