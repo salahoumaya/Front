@@ -78,7 +78,7 @@ export class LoginComponent {
                     this.router.navigate(['/instructor/instructor-dashboard']);
                     break;
                 case 'MODERATOR':
-                    this.router.navigate(['/home-three']);
+                    this.router.navigate(['/pages/course/formations']);
                     break;
                 default:
                     this.router.navigate(['/student/student-test']);

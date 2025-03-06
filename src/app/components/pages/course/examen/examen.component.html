@@ -1,0 +1,108 @@
+<div class="breadcrumb-bar">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-12">
+          <div class="breadcrumb-list">
+            <nav aria-label="breadcrumb" class="page-breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item">Courses</li>
+                <li class="breadcrumb-item active">All Courses</li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <section class="course-content py-4">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-9">
+          <div class="row">
+            <div class="container mt-4">
+                <h2 class="text-center">Gestion des Examens</h2>
+                <button type="button" class="btn btn-secondary" (click)="goBack()">Back</button>
+
+                <!-- Formulaire d'ajout / modification -->
+                <div class="card p-4 mt-3 shadow">
+                  <form [formGroup]="examenForm" (ngSubmit)="isEditing ? updateExamen() : addExamen()">
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label">Titre:</label>
+                        <input type="text" class="form-control" formControlName="titre" required />
+                      </div>
+              
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label">Note:</label>
+                        <input type="number" class="form-control" formControlName="note" required min="0" max="20" />
+                      </div>
+              
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label">Type:</label>
+                        <select class="form-select" formControlName="examenT">
+                          <option value="ORAL">Oral</option>
+                          <option value="ECRIT">Écrit</option>
+                        </select>
+                      </div>
+              
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label">Session:</label>
+                        <select class="form-select" formControlName="session">
+                          <option value="PRINCIPALE">Principale</option>
+                          <option value="CONTROLE">Contrôle</option>
+                        </select>
+                      </div>
+              
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label">Date:</label>
+                        <input type="date" class="form-control" formControlName="date" required />
+                      </div>
+              
+                      <div class="col-12 text-center">
+                        <button type="submit" class="btn btn-primary">
+                          {{ isEditing ? 'Modifier' : 'Ajouter' }} Examen
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              
+                <!-- Liste des examens -->
+                <div class="table-responsive mt-4" *ngIf="examens.length > 0">
+                  <table class="table table-striped table-bordered text-center">
+                    <thead class="table-dark">
+                      <tr>
+                        <th>ID</th>
+                        <th>Titre</th>
+                        <th>Note</th>
+                        <th>Type</th>
+                        <th>Session</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let examen of examens">
+                        <td>{{ examen.id }}</td>
+                        <td>{{ examen.titre }}</td>
+                        <td>{{ examen.note }}</td>
+                        <td>{{ examen.examenT }}</td>
+                        <td>{{ examen.session }}</td>
+                        <td>{{ examen.date | date:"yyyy-MM-dd" }}</td>
+                        <td>
+                          <button class="btn btn-warning btn-sm me-2" (click)="editExamen(examen)">Modifier</button>
+                          <button class="btn btn-danger btn-sm" (click)="deleteExamen(examen.id!)">Supprimer</button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>

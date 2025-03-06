@@ -1,0 +1,127 @@
+<div class="breadcrumb-bar">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-12">
+          <div class="breadcrumb-list">
+            <nav aria-label="breadcrumb" class="page-breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item">Courses</li>
+                <li class="breadcrumb-item active">All Courses</li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <section class="course-content py-4">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-9">
+          <div class="row">
+            <div class="container">
+              <h2 class="mb-4 text-center">Liste des Formations</h2>
+              <a type="button"  routerLink="/pages/course/diplome"  class="btn btn-success me-2 " > diplome</a>
+
+              <button type="button" *ngIf="!openadd" class="btn btn-secondary " (click)="openadd=true">Ajouter Formation</button>
+<br><br>
+              <!-- Formulaire d'ajout -->
+              <div *ngIf="openadd" class="card p-4 shadow mb-4">
+                <h4 class="mb-3">Ajouter une formation</h4>
+                <form (ngSubmit)="addFormation()">
+                  <div class="mb-3">
+                    <label for="titre" class="form-label">Titre</label>
+                    <input type="text" id="titre" class="form-control" [(ngModel)]="newFormation.titre" name="titre" required />
+                  </div>
+  
+                  <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <input type="text" id="description" class="form-control" [(ngModel)]="newFormation.description" name="description" required />
+                  </div>
+  
+                  <div class="mb-3">
+                    <label for="niveau" class="form-label">Niveau</label>
+                    <select id="niveau" class="form-select" [(ngModel)]="newFormation.niveau" name="niveau" required>
+                      <option value="Beginner">Beginner</option>
+                      <option value="Intermediate">Intermediate</option>
+                      <option value="Advanced">Advanced</option>
+                    </select>
+                  </div>
+  
+                  <div class="mb-3">
+                    <label for="formationT" class="form-label">Type de Formation</label>
+                    <select id="formationT" class="form-select" [(ngModel)]="newFormation.formationT" name="formationT" required>
+                      <option value="Video">Vidéo</option>
+                      <option value="Enligne">En ligne</option>
+                    </select>
+                  </div>
+  
+                  <button type="submit" class="btn btn-primary w-100">Ajouter</button>
+                  <button type="button" class="btn btn-danger w-100 mt-2" (click)="cancelajouter()">Annuler</button>
+
+                </form>
+              </div>
+  
+              <!-- Liste des formations -->
+              <div class="row" *ngIf="!selectedFormation">
+                <div class="col-md-6 mb-3" *ngFor="let formation of formations">
+                  <div class="card shadow">
+                    <div class="card-body">
+                      <h5 class="card-title">{{ formation.titre }}</h5>
+                      <p class="card-text">{{ formation.description }}</p>
+                      <p class="card-text"><strong>Niveau :</strong> {{ formation.niveau }}</p>
+                      <p class="card-text"><strong>Type :</strong> {{ formation.formationT }}</p>
+                      
+                      <button class="btn btn-warning me-2" (click)="editFormation(formation)">Modifier</button>
+                      <button class="btn btn-danger  me-2" (click)="deleteFormation(formation.id!)">Supprimer</button>
+                      <button class="btn btn-warning me-2" [routerLink]="'/pages/course/examen/'+formation.id">exeman</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+  
+              <!-- Formulaire de modification -->
+              <div *ngIf="selectedFormation" class="card p-4 shadow mt-4">
+                <h4 class="mb-3">Modifier la formation</h4>
+                <form (ngSubmit)="updateFormation()">
+                  <div class="mb-3">
+                    <label class="form-label">Titre</label>
+                    <input type="text" class="form-control" [(ngModel)]="selectedFormation.titre" name="titre" required />
+                  </div>
+  
+                  <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <input type="text" class="form-control" [(ngModel)]="selectedFormation.description" name="description" required />
+                  </div>
+  
+                  <div class="mb-3">
+                    <label class="form-label">Niveau</label>
+                    <select class="form-select" [(ngModel)]="selectedFormation.niveau" name="niveau" required>
+                      <option value="Beginner">Beginner</option>
+                      <option value="Intermediate">Intermediate</option>
+                      <option value="Advanced">Advanced</option>
+                    </select>
+                  </div>
+  
+                  <div class="mb-3">
+                    <label class="form-label">Type de Formation</label>
+                    <select class="form-select" [(ngModel)]="selectedFormation.formationT" name="formationT" required>
+                      <option value="Video">Vidéo</option>
+                      <option value="Enligne">En ligne</option>
+                    </select>
+                  </div>
+  
+                  <button type="submit" class="btn btn-success w-100">Mettre à jour</button>
+                  <button type="button" class="btn btn-secondary w-100 mt-2" (click)="cancelEdit()">Annuler</button>
+                </form>
+              </div>
+  
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  

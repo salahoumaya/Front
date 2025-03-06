@@ -1,12 +1,34 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CourseComponent } from './course.component';
+import { FormationComponent } from './formation/formation.component';
 
 const routes: Routes = [
   {
     path: '',
     component: CourseComponent,
     children: [
+      {
+        path: 'formations',
+        loadChildren: () =>
+          import('./formation/formation.module').then(
+            (m) => m.FormationModule
+          ),
+      },
+      {
+        path: 'examen/:id',
+        loadChildren: () =>
+          import('./examen/examen.module').then(
+            (m) => m.ExamenModule
+          ),
+      },
+      {
+        path: 'diplome',
+        loadChildren: () =>
+          import('./diplome/diplome.module').then(
+            (m) => m.DiplomeModule
+          ),
+      },
       {
         path: 'add-course',
         loadChildren: () =>
