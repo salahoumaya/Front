@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -65,4 +66,15 @@ export class CandidatureService {
       headers: this.getHeaders() // Inclut les en-têtes avec le token
     });
   }
+
+  
+
+  sendConfirmationEmail(email: string): Observable<any> {
+    return this.http.post<any>(
+      `${this.apiUrl}/admin/send-confirmation-email`,
+      { email }, // Utilisation directe d'un objet JSON
+      { headers: this.getHeaders() }
+    );
+  }
+  
 }

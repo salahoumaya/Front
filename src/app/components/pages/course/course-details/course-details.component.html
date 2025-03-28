@@ -62,9 +62,19 @@
                                                   <td>{{ candidature.specialite }}</td>
                                                   <td>{{ candidature.statut }}</td>
                                                   <td>
-                                                      <button class="btn btn-warning btn-sm" (click)="onUpdate(candidature)">Modifier</button>
-                                                      <button class="btn btn-danger btn-sm" (click)="onDelete(candidature.candidatId)">Supprimer</button>
+                                                    <td>
+                                                      <button class="btn btn-warning btn-sm" (click)="onUpdate(candidature)">
+                                                          <i class="bx bx-edit"></i> Modifier
+                                                      </button>
+                                                      
+                                                      <button class="btn btn-danger btn-sm" (click)="onDelete(candidature.candidatId)">
+                                                          <i class="bx bx-trash"></i> Supprimer
+                                                      </button>     
+                                                  
+                                                      
                                                   </td>
+
+                                                
                                               </tr>
                                           </tbody>
                                       </table>

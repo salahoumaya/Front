@@ -1,76 +1,59 @@
+<!-- Page Content -->
 <div class="page-content">
     <div class="container">
-        <div class="row">
-            <!-- Sidebar -->
-            <app-student-sidebar class="col-xl-3 col-lg-3 theiaStickySidebar"></app-student-sidebar>
-            <!-- /Sidebar -->
-            
-            <!-- Student Settings -->
-            <div class="col-xl-9 col-lg-9">    
-                <div class="settings-widget card-details">
-                    <div class="settings-menu p-0">
-                        <div class="profile-heading">
-                            <h3>Ajouter une nouvelle candidature</h3>
-                            <p>Remplissez les informations pour soumettre votre candidature</p>
-                        </div>
-                        <form (ngSubmit)="onSubmit(candidatureForm)" #candidatureForm="ngForm">
-                            <div class="checkout-form settings-wrap">
-                                <div class="edit-profile-info d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h5>Informations Personnelles</h5>
-                                    </div>
-                                    <button class="btn btn-secondary" (click)="goToCandidatureList()">Consulter Candidatures</button>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="input-block">
-                                            <label for="nom" class="form-label">Nom</label>
-                                            <input type="text" class="form-control" id="nom" [(ngModel)]="newCandidature.nom" name="nom" required />
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="input-block">
-                                            <label for="prenom" class="form-label">Prénom</label>
-                                            <input type="text" class="form-control" id="prenom" [(ngModel)]="newCandidature.prenom" name="prenom" required />
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="input-block">
-                                            <label for="email" class="form-label">Email</label>
-                                            <input type="email" class="form-control" id="email" [(ngModel)]="newCandidature.email" name="email" required />
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="input-block">
-                                            <label for="specialite" class="form-label">Spécialité</label>
-                                            <input type="text" class="form-control" id="specialite" [(ngModel)]="newCandidature.specialite" name="specialite" required />
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="input-block">
-                                            <label for="statut" class="form-label">Statut</label>
-                                            <select class="form-control" [(ngModel)]="newCandidature.statut" name="statut" required disabled>
-                                                <option value="EN_ATTENTE">EN ATTENTE</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="input-block">
-                                            <label for="nbr_exp" class="form-label">Nombre d'Expériences</label>
-                                            <input type="number" class="form-control" id="nbr_exp" [(ngModel)]="newCandidature.nbr_exp" name="nbr_exp" required />
-                                        </div>
-                                    </div>
-                                    <!-- Boutons -->
-                                    <div class="col-md-12 d-flex justify-content-between mt-3">
-                                        <button class="btn btn-primary" type="submit" [disabled]="!candidatureForm.valid">Enregistrer</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>                                
-                    </div>
+      <div class="row">
+  
+        <!-- Sidebar -->
+        <app-student-sidebar class="col-xl-3 col-lg-3 theiaStickySidebar"></app-student-sidebar>
+        <!-- /Sidebar -->
+  
+        <!-- Candidature Form -->
+        <div class="col-xl-9 col-lg-9">	
+          <div class="settings-widget card-details">
+            <div class="settings-menu p-0">
+              <div class="profile-heading d-flex justify-content-between align-items-center">
+                <h3>Ajouter une Candidature</h3>
+                <div>
+                  <a routerLink="/pages/course/course-details" class="btn btn-primary">Retour à la Liste</a>
                 </div>
-            </div>    
-            <!-- /Student Settings -->
+              </div>
+              <div class="checkout-form">
+  
+                <form (ngSubmit)="onSubmit(form)" #form="ngForm">
+                  <div class="mb-3">
+                    <label for="nom" class="form-label">Nom</label>
+                    <input type="text" id="nom" class="form-control" [(ngModel)]="newCandidature.nom" name="nom" required>
+                  </div>
+                  <div class="mb-3">
+                    <label for="prenom" class="form-label">Prénom</label>
+                    <input type="text" id="prenom" class="form-control" [(ngModel)]="newCandidature.prenom" name="prenom" required>
+                  </div>
+                  <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" id="email" class="form-control" [(ngModel)]="newCandidature.email" name="email" required>
+                  </div>
+                  <div class="mb-3">
+                    <label for="specialite" class="form-label">Spécialité</label>
+                    <input type="text" id="specialite" class="form-control" [(ngModel)]="newCandidature.specialite" name="specialite" required>
+                  </div>
+                  <div class="mb-3">
+                    <label for="nbr_exp" class="form-label">Nombre d'Expériences</label>
+                    <input type="number" id="nbr_exp" class="form-control" [(ngModel)]="newCandidature.nbr_exp" name="nbr_exp" required>
+                  </div>
+                  <div class="mb-3">
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                  </div>
+                  <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+                  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+                </form>
+  
+              </div>
+            </div>
+          </div>
         </div>
+        <!-- /Candidature Form -->
+  
+      </div>
     </div>
-</div>
+  </div>	
+  <!-- /Page Content -->
