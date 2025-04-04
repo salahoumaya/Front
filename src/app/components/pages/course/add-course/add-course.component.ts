@@ -1,5 +1,7 @@
 import { Component, ViewEncapsulation } from '@angular/core';
-import { routes } from 'src/app/shared/service/routes/routes';
+import { NgForm } from '@angular/forms';
+import { TrainingService } from 'src/app/shared/service/TrainingPlan/training.service';
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-add-course',
@@ -8,17 +10,59 @@ import { routes } from 'src/app/shared/service/routes/routes';
   encapsulation: ViewEncapsulation.None,
 })
 export class AddCourseComponent {
-  public routes = routes;
-  selected = '1';
-  selected2 = '1';
-  public activeIndex = 0;
-  text: string | undefined;
+  selected: string = 'beginner';
+  selected2: string = 'ONLINE';
+  title: string = '';
+  description: string = '';
+  isSubmitting: boolean = false;
 
-  public onSubmit(index: number) {
-    this.activeIndex = index;
+  modalTitle: string = '';
+  modalMessage: string = '';
+  isError: boolean = false;
+
+  constructor(private trainingService: TrainingService) {}
+
+  public onSubmit(form: NgForm) {
+    if (form.invalid) {
+      return;
+    }
+
+    this.isSubmitting = true;
+
+    const trainingData = {
+      title: this.title.trim(),
+      level: this.selected,
+      typeTraning: this.selected2,
+      description: this.description.trim(),
+    };
+
+    this.trainingService.addTraining(trainingData).subscribe(
+      () => {
+        this.showModal('Success', 'Training added successfully!', false);
+        form.resetForm();
+        this.resetFormValues();
+      },
+      () => {
+        this.showModal('Error', 'Error adding training. Please try again.', true);
+      }
+    ).add(() => {
+      this.isSubmitting = false;
+    });
   }
 
-  public onBack(index: number) {
-    this.activeIndex = index;
+  private resetFormValues() {
+    this.selected = 'beginner';
+    this.selected2 = 'ONLINE';
+    this.title = '';
+    this.description = '';
+  }
+
+  private showModal(title: string, message: string, isError: boolean) {
+    this.modalTitle = title;
+    this.modalMessage = message;
+    this.isError = isError;
+
+    const modal = new bootstrap.Modal(document.getElementById('responseModal'));
+    modal.show();
   }
 }
