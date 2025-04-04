@@ -1,0 +1,106 @@
+<section class="course-content">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-9 col-md-12">
+          <div class="page-header">
+            <h2 class="page-title">Sélectionner </h2>
+            <ul class="breadcrumb">
+              <li class="breadcrumb-item"><a href="javascript:void(0)">Accueil</a></li>
+              <li class="breadcrumb-item active">Exmen</li>
+            </ul>
+          </div>
+        
+    
+  
+          <!-- Vérifier le chargement des tests -->
+      
+          <div class="row">
+            <div class="container mt-4">
+                <h2 class="text-center">Examens</h2>
+                <button type="button" class="btn btn-secondary" (click)="goBack()">Back</button>
+
+             
+              
+                <!-- Liste des examens -->
+                <div class="row mt-4" *ngIf="examens.length > 0">
+                    <div class="col-md-4 mb-3" *ngFor="let examen of examens">
+                      <div class="card shadow">
+                        <div class="card-body">
+                          <h5 class="card-title">{{ examen.titre }}</h5>
+                          <h6 class="card-subtitle mb-2 text-muted">ID: {{ examen.id }}</h6>
+                  
+                          <p class="card-text">
+                            <strong>Note :</strong> {{ examen.note ? examen.note : "Null" }} <br>
+                            <strong>Type :</strong> {{ examen.examenT }} <br>
+                            <strong>Session :</strong> {{ examen.session }} <br>
+                            <strong>Date :</strong> {{ examen.date | date:"yyyy-MM-dd" }}
+                          </p>
+                  
+                          <button class="btn btn-danger btn-sm w-100" (click)="assignUser(examen.id!)">
+                            Participer
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                <div *ngIf="examens.length === 0" class="alert alert-info text-center mt-4">
+                    Aucun examen trouvé.
+                </div>                  
+              </div>
+              
+          </div>
+     
+        
+          <!-- Liste des Tests sous forme de Cartes -->
+        
+  
+          <!-- Pagination -->
+          <div class="row">
+            <div class="col-md-12">
+              <ul class="pagination lms-page">
+                <li class="page-item prev"><a class="page-link" href="javascript:void(0)"><i class="fas fa-angle-left"></i></a></li>
+                <li class="page-item active"><a class="page-link" href="javascript:void(0)">1</a></li>
+                <li class="page-item"><a class="page-link" href="javascript:void(0)">2</a></li>
+                <li class="page-item"><a class="page-link" href="javascript:void(0)">3</a></li>
+                <li class="page-item next"><a class="page-link" href="javascript:void(0)"><i class="fas fa-angle-right"></i></a></li>
+              </ul>
+            </div>
+          </div>
+  
+        </div>
+  
+        <!-- Sidebar -->
+        <div class="col-lg-3 col-md-12 sidebar-right theiaStickySidebar">
+          <div class="stickybar">
+            <!-- Recherche -->
+            <div class="card search-widget blog-search blog-widget">
+              <div class="card-body">
+                <form class="search-form">
+                  <div class="input-group">
+                    <input type="text" placeholder="Rechercher..." class="form-control">
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
+                  </div>
+                </form>
+              </div>
+            </div>
+  
+            <!-- Tests Récents -->
+            <div class="card post-widget blog-widget">
+              <div class="card-header">
+                <h4 class="card-title">Tests Récents</h4>
+              </div>
+              <div class="card-body">
+                <ul class="latest-posts">
+                 
+                </ul>
+              </div>
+            </div>
+  
+          </div>
+        </div>
+        <!-- /Sidebar -->
+  
+      </div>
+    </div>
+  </section>
+  

@@ -1,21 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { Examen, ExamenService } from 'src/app/services/examen.service';
 import { AuthService } from 'src/app/shared/service/Auth/auth.service';
 
 @Component({
-  selector: 'app-examen',
-  templateUrl: './examen.component.html',
-  styleUrl: './examen.component.scss',
+  selector: 'app-exman',
+  templateUrl: './exman.component.html',
+  styleUrl: './exman.component.scss'
 })
-export class ExamenComponent implements OnInit {
-  examens: any[] = [];
+export class ExmanComponent  implements OnInit {
+  examens: Examen[] = [];
   examenForm!: FormGroup;
   isEditing: boolean = false;
   selectedExamenId?: number;
   idformation!: number;
-  
+
 
   constructor(
     private route: ActivatedRoute,
@@ -23,22 +23,35 @@ export class ExamenComponent implements OnInit {
     private auth:AuthService,
     private fb: FormBuilder
   ) {}
+
+  userId:any
   ngOnInit(): void {
     this.idformation = Number(this.route.snapshot.paramMap.get('id'));
+    this.auth.getProfile().subscribe(
+      (user) => {
+        console.log("User profile:", user.ourUsers.id);
+        this.userId = user.ourUsers.id
+        console.log("User ID:", this.userId);
+      },
+      (error) => {
+        console.error("Error fetching user profile:", error);
+      }
+    );
     this.initForm();
     this.loadExamens();
-   
-
   }
-  selectedUser: any = null;
-  saveNote(): void {
-   
+  assignUser(examenId: number) {
+    this.examenService.assignUserToExamen(examenId, this.userId).subscribe(response => {
+      alert(response);
+    }, error => {
+      alert("Erreur lors de l'affectation !");
+    });
   }
   initForm(): void {
     this.examenForm = this.fb.group({
       titre: ['', Validators.required],
+      note: ['', [Validators.required, Validators.min(0), Validators.max(20)]],
       examenT: ['ORAL', Validators.required],
-      duree: ['', [Validators.required, Validators.min(0), Validators.max(20)]],
       session: ['PRINCIPALE', Validators.required],
       date: ['', Validators.required]
     });
@@ -51,34 +64,20 @@ export class ExamenComponent implements OnInit {
       this.examens = data;
     });
   }
-  users:any[]=[];
-  copyidexamen:any
-  loadparticiper(id:any): void {
-    this.copyidexamen = id
-    this.examenService.getParticipants(id).subscribe((data) => {
-      console.log(data);
-      this.users = data;
-    });
-  }
-  addnote(): void {
-    this.examenService.addnote(this.selcetedId, this.selectedUser).subscribe((data) => {
-      console.log(data);
-      alert(data)
-      this.loadparticiper(this.copyidexamen);
-    },(error)=>{
-      console.log(error);
-      
-    });
-    
-  }
+
   addExamen(): void {
     if (this.examenForm.valid) {
-      this.examenService.addExamen(this.examenForm.value, this.idformation).subscribe(() => {
+      const formattedDate = new Date(this.examenForm.value.date).toISOString();
+
+      this.examenForm.patchValue({
+        date: formattedDate
+      });
+      this.examenService.addExamen(this.examenForm.value,  this.idformation).subscribe(() => {
         this.loadExamens();
         this.examenForm.reset();
       },(error)=>{
         console.log(error);
-        
+
       });
     }
   }
@@ -91,6 +90,11 @@ export class ExamenComponent implements OnInit {
 
   updateExamen(): void {
     if (this.examenForm.valid && this.selectedExamenId) {
+      const formattedDate = new Date(this.examenForm.value.date).toISOString();
+
+      this.examenForm.patchValue({
+        date: formattedDate
+      });
       this.examenService.updateExamen(this.selectedExamenId, this.examenForm.value).subscribe(() => {
         this.isEditing = false;
         this.selectedExamenId = undefined;
@@ -99,11 +103,7 @@ export class ExamenComponent implements OnInit {
       });
     }
   }
-  selcetedId:any
-  selectid(id:any,iduser:any){
-    this.selcetedId = id
-  
-  }
+
   deleteExamen(id: number): void {
     if (confirm('Voulez-vous vraiment supprimer cet examen ?')) {
       this.examenService.deleteExamen(id).subscribe(() => {

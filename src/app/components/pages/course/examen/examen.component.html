@@ -33,11 +33,11 @@
                         <label class="form-label">Titre:</label>
                         <input type="text" class="form-control" formControlName="titre" required />
                       </div>
-              
                       <div class="col-md-6 mb-3">
-                        <label class="form-label">Note:</label>
-                        <input type="number" class="form-control" formControlName="note" required min="0" max="20" />
+                        <label class="form-label">Duree:</label>
+                        <input type="text" class="form-control" formControlName="duree" required />
                       </div>
+                  
               
                       <div class="col-md-6 mb-3">
                         <label class="form-label">Type:</label>
@@ -76,8 +76,8 @@
                       <tr>
                         <th>ID</th>
                         <th>Titre</th>
-                        <th>Note</th>
                         <th>Type</th>
+                        <th>Duree</th>
                         <th>Session</th>
                         <th>Date</th>
                         <th>Actions</th>
@@ -87,12 +87,15 @@
                       <tr *ngFor="let examen of examens">
                         <td>{{ examen.id }}</td>
                         <td>{{ examen.titre }}</td>
-                        <td>{{ examen.note }}</td>
                         <td>{{ examen.examenT }}</td>
+                        <td>{{ examen.duree }}</td>
                         <td>{{ examen.session }}</td>
                         <td>{{ examen.date | date:"yyyy-MM-dd" }}</td>
                         <td>
+                          <button class="btn btn-danger btn-sm me-2" data-bs-toggle="modal" href="#exampleModalToggle" role="button" (click)="loadparticiper(examen.id!)">Participer</button>
+
                           <button class="btn btn-warning btn-sm me-2" (click)="editExamen(examen)">Modifier</button>
+                          
                           <button class="btn btn-danger btn-sm" (click)="deleteExamen(examen.id!)">Supprimer</button>
                         </td>
                       </tr>
@@ -106,3 +109,65 @@
       </div>
     </div>
   </section>
+  <div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalToggleLabel">Participer</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="table-reponsive" *ngIf="users.length > 0">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Nom</th>
+                  <th>Email</th>
+                  <th>Note</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody *ngFor="let user of users">
+                <tr>
+                  <td>{{ user.user.name }}</td>
+                  <td>{{ user.user.email }}</td>
+                  <td>{{ user.note }}</td>
+                  <td>
+                    <div class="modal-footer">
+                      <button (click)="selectid(user.id,user.user.id)"  [disabled]="user.note!=0"class="btn btn-primary" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal" data-bs-dismiss="modal">add Note</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div *ngIf="users.length === 0" class="alert alert-info text-center mt-4">
+            Aucun utilisateur trouvé.
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-target="#exampleModalToggle" data-bs-toggle="modal" data-bs-dismiss="modal">Retour</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <div class="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalToggleLabel2">Ajouter une note</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div>
+            <label for="note">Note</label>
+            <input type="number" class="form-control" id="note" [(ngModel)]="selectedUser" placeholder="Entrez la note" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary"  (click)="addnote()">Enregistrer</button>
+          <button class="btn btn-secondary" data-bs-target="#exampleModalToggle" data-bs-toggle="modal" data-bs-dismiss="modal">Retour</button>
+        </div>
+      </div>
+    </div>
+  </div>

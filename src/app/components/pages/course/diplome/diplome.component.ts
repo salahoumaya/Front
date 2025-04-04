@@ -83,7 +83,9 @@ export class DiplomeComponent implements OnInit {
   onGenerateDiploma(diplomaId: number, userId: number): void {
     this.diplomeService.generateDiploma(diplomaId, userId).subscribe(
       (response: string) => {
-        window.open(response, '_blank');
+        // window.open(response, '_blank');
+        alert('Diploma generated successfully! ');
+        this.loadDiplomes()
       },
       (error) => {
         console.error('Error generating diploma', error);

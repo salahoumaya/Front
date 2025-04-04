@@ -21,6 +21,7 @@ import { StudentQuizDetailsComponent } from './student-quiz-details/student-quiz
 import { TestSelectionComponent } from './tests/test-selection/test-selection.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TestAttemptComponent } from './tests/test-attempt/test-attempt.component';
+import { ExmanComponent } from './exman/exman.component';
 
 
 @NgModule({
@@ -39,6 +40,7 @@ import { TestAttemptComponent } from './tests/test-attempt/test-attempt.componen
     StudentTicketsComponent,
     StudentQuizDetailsComponent,
     TestSelectionComponent,
+    ExmanComponent,
     TestAttemptComponent
   ],
   imports: [

@@ -74,9 +74,27 @@
                       <p class="card-text"><strong>Niveau :</strong> {{ formation.niveau }}</p>
                       <p class="card-text"><strong>Type :</strong> {{ formation.formationT }}</p>
                       
-                      <button class="btn btn-warning me-2" (click)="editFormation(formation)">Modifier</button>
-                      <button class="btn btn-danger  me-2" (click)="deleteFormation(formation.id!)">Supprimer</button>
-                      <button class="btn btn-warning me-2" [routerLink]="'/pages/course/examen/'+formation.id">exeman</button>
+                      <div class="mt-auto d-flex flex-wrap justify-content-between">
+                        <!-- Button: Calcul Moyenne -->
+                        <button class="btn btn-primary btn-sm me-2 mb-2" (click)="calculmoyenne(formation.id!)">
+                          <i class="fas fa-calculator me-2"></i> Moy
+                        </button>
+                        
+                        <!-- Button: Modifier -->
+                        <button class="btn btn-secondary btn-sm me-2 mb-2" (click)="editFormation(formation)">
+                          <i class="fas fa-edit me-2"></i> Modif
+                        </button>
+                        
+                        <!-- Button: Supprimer -->
+                        <button class="btn btn-danger btn-sm me-2 mb-2" (click)="deleteFormation(formation.id!)">
+                          <i class="fas fa-trash me-2"></i> Suppr
+                        </button>
+                        
+                        <!-- Button: Examen -->
+                        <button class="btn btn-info btn-sm mb-2" [routerLink]="'/pages/course/examen/'+formation.id">
+                          <i class="fas fa-book me-2"></i> Examen
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>

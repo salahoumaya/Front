@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ExamenService } from 'src/app/services/examen.service';
 import { Formation, FormationService } from 'src/app/services/formation.service';
 
 @Component({
@@ -11,7 +12,9 @@ export class FormationComponent implements OnInit {
   newFormation: Formation = new Formation();
   selectedFormation: Formation | null = null;
 
-  constructor(private formationService: FormationService) {}
+  constructor(private formationService: FormationService,
+    private examen: ExamenService,
+  ) {}
 
   ngOnInit(): void {
     this.getFormations();
@@ -24,7 +27,15 @@ export class FormationComponent implements OnInit {
       this.formations = data;
     });
   }
-
+  calculmoyenne(id:number):void{
+    this.examen.calcul(id).subscribe((data) => {
+      console.log(data);
+      alert("la moyenne est : "+data)
+    }, (error) => {
+      console.error('Error fetching formations', error);
+    }
+    );
+  }
   addFormation(): void {
     this.formationService.createFormation(this.newFormation).subscribe(() => {
       this.getFormations();

@@ -43,6 +43,7 @@
             <th>Date Obtention</th>
             <th>Formation</th>
             <th>User</th>
+            <th>Diplome</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -53,12 +54,23 @@
             <td>{{ diplome.formation.titre }}</td>
             <td>{{ diplome.user.name }}</td>
             <td>
+              <a [href]="'http://localhost:8076/diplomes/users/Image/'+diplome.path"
+              [ngClass]="{ 'disabled-link': !diplome.path }"
+              [attr.target]="diplome.path ? '_blank' : null"
+              [attr.rel]="diplome.path ? 'noopener noreferrer' : null">
+                
+                See
+              </a>
+            </td>
+        
+            <td>
               <button class="btn btn-warning" (click)="onEditDiplome(diplome.id)">Edit</button>
               <button class="btn btn-danger" (click)="onDeleteDiplome(diplome.id)">Delete</button>
               <button class="btn btn-info" (click)="onGenerateDiploma(diplome.id, diplome.user.id)">Generate Dip</button>
             </td>
           </tr>
         </tbody>
+        
       </table>
     </div>
   </div>

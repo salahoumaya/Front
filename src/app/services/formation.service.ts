@@ -35,6 +35,12 @@ export class FormationService {
   getAllFormations(): Observable<Formation[]> {
     return this.http.get<Formation[]>(this.apiUrl, { headers: this.getHeaders() });
   }
+  getAllFormationsuser(number:any): Observable<Formation[]> {
+    return this.http.get<Formation[]>(this.apiUrl+"/buuser/"+number, { headers: this.getHeaders() });
+  }
+  assignUserToFormation(formationId: number, userId: number): Observable<string> {
+    return this.http.post<string>(`${this.apiUrl}/${formationId}/assign/${userId}`, {},{headers: this.getHeaders(),responseType:'text' as 'json'});
+  }
 
   getFormationById(id: number): Observable<Formation> {
     return this.http.get<Formation>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });

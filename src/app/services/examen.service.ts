@@ -30,16 +30,30 @@ export class ExamenService {
     }
     return headers;
   }
+  assignUserToExamen(examenId: number, userId: number): Observable<string> {
+    return this.http.post<string>(`${this.apiUrl}/${examenId}/assign/${userId}`, {},{responseType:'text' as 'json', headers: this.getHeaders()});
+  }
+  calcul(examenId: number): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/${examenId}/calcul`, {},{responseType:'text' as 'json', headers: this.getHeaders()});
+  }
+  addnote(examenId: number, userId: number): Observable<string> {
+    return this.http.post<string>(`${this.apiUrl}/${examenId}/note/${userId}`, {},{responseType:'text' as 'json', headers: this.getHeaders()});
+  }
+    getAllexsuser(number:any): Observable<Examen[]> {
+      return this.http.get<Examen[]>(this.apiUrl+"/buuser/"+number, { headers: this.getHeaders() });
+    }
   getExamens(): Observable<Examen[]> {
     return this.http.get<Examen[]>(this.apiUrl, { headers: this.getHeaders() });
   }
   getExamensbyfor(id:number): Observable<Examen[]> {
     return this.http.get<Examen[]>(this.apiUrl+"/byformation?id="+id, { headers: this.getHeaders() });
   }
-  addExamen(examen: Examen, userId: number, formationId: number): Observable<Examen> {
-    return this.http.post<Examen>(`${this.apiUrl}/${userId}/${formationId}`, examen, { headers: this.getHeaders() });
+  addExamen(examen: Examen, formationId: number): Observable<Examen> {
+    return this.http.post<Examen>(`${this.apiUrl}/${formationId}`, examen, { headers: this.getHeaders() });
   }
-
+  getmoyenne(formationId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/get/${formationId}`, { headers: this.getHeaders() });
+  }
   updateExamen(id: number, examen: Examen): Observable<Examen> {
     return this.http.put<Examen>(`${this.apiUrl}/${id}`, examen, { headers: this.getHeaders() });
   }
@@ -52,7 +66,7 @@ export class ExamenService {
     return this.http.post<string>(`${this.apiUrl}/${examenId}/participer/${userId}`, {}, { headers: this.getHeaders() });
   }
 
-  getParticipants(examenId: number): Observable<string[]> {
-    return this.http.get<string[]>(`${this.apiUrl}/${examenId}/participants`, { headers: this.getHeaders() });
+  getParticipants(examenId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/${examenId}/participants`, { headers: this.getHeaders() });
   }
 }

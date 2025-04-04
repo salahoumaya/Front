@@ -2,15 +2,67 @@
   <div class="container">
     <div class="row">
       <div class="col-lg-9 col-md-12">
+        <div class="page-header">
+          <h2 class="page-title">{{moyenne ? moyenne : "--/20" }} votre moyenne </h2>
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="javascript:void(0)">Accueil</a></li>
+            <li class="breadcrumb-item active">Formation</li>
+          </ul>
+        </div>
+        <button *ngIf="status && !hidden" class="btn btn-danger p-2 mb-3" (click)="selected()">My list</button>
+        <button *ngIf="!status && !hidden" (click)="selected()" class="btn btn-secondary p-2 mb-3">Formations</button>
+        <button (click)="toggleHidden()"  class="btn btn-danger p-2 mb-3">My Examens</button>
 
+      <div *ngIf="hidden" >
+        <div class="row mt-4" *ngIf="examans.length > 0">
+          <div class="col-md-4 mb-3" *ngFor="let examen of examans">
+            <div class="card shadow">
+              <div class="card-body">
+                <h5 class="card-title">{{ examen.examen.titre }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">ID: {{ examen.id }}</h6>
+        
+                <p class="card-text">
+                  <strong>Note :</strong> {{ examen.note ? examen.note : "00" }} <br>
+                  <strong>Type :</strong> {{ examen.examen.examenT }} <br>
+                  <strong>Session :</strong> {{ examen.examen.session }} <br>
+                  <strong>Date :</strong> {{ examen.examen.date | date:"yyyy-MM-dd" }}
+                </p>
+        
+               
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+        
         <!-- Vérifier le chargement des tests -->
+    
+        <div class="row" *ngIf="!hidden" >
+          <h2 class="text-danger" *ngIf="!status"> My list</h2>
+          <h2 class="text-danger" *ngIf="status"> LIST FORMATIONS</h2>
+          <div class="col-md-6 mb-3" *ngFor="let formation of formations">
+            <div class="card shadow">
+              <div class="card-body">
+                <h5 class="card-title">{{ formation.titre }}</h5>
+                <p class="card-text">{{ formation.description }}</p>
+                <p class="card-text"><strong>Niveau :</strong> {{ formation.niveau }}</p>
+                <p class="card-text"><strong>Type :</strong> {{ formation.formationT }}</p>
+                
+                
+                <button class="btn btn-warning me-2" (click)="assignUser(formation.id)" *ngIf="status" >Save</button>
+
+                <button class="btn btn-warning me-2" [routerLink]="'/student/examn/'+formation.id" *ngIf="!status" >Examen</button>
+
+              </div>
+            </div>
+          </div>
+        </div>
         <div *ngIf="isLoading" class="text-center">
           <p>Chargement des tests...</p>
         </div>
         <div *ngIf="errorMessage" class="alert alert-danger">
           {{ errorMessage }}
         </div>
-
         <!-- Liste des Tests sous forme de Cartes -->
         <div *ngFor="let test of tests" class="blog">
           <div class="blog-image">

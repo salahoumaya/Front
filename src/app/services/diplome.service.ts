@@ -7,6 +7,7 @@ export interface Diplome {
   dateObtention: string;  
   formation: any;  
   user: any; 
+  path:any
 }
 
 @Injectable({

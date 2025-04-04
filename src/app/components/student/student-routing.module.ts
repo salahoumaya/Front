@@ -16,6 +16,7 @@ import { StudentTicketsComponent } from './student-tickets/student-tickets.compo
 import { StudentQuizDetailsComponent } from './student-quiz-details/student-quiz-details.component';
 import { TestSelectionComponent } from './tests/test-selection/test-selection.component';
 import { TestAttemptComponent } from './tests/test-attempt/test-attempt.component';
+import { ExmanComponent } from './exman/exman.component';
 
 const routes: Routes = [
   {
@@ -23,6 +24,7 @@ const routes: Routes = [
     component: StudentComponent,
     children: [
       { path: 'student-test', component: TestSelectionComponent },
+      { path: 'examn/:id', component: ExmanComponent },
       { path: 'test-attempt/:id', component: TestAttemptComponent },
       {
         path: 'student-view',
