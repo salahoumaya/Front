@@ -8,7 +8,7 @@
             <ol class="breadcrumb">
               <li class="breadcrumb-item"><a [routerLink]="routes.home">Home</a></li>
               <li class="breadcrumb-item" aria-current="page">Courses</li>
-              <li class="breadcrumb-item active" aria-current="page">All Courses</li>
+              <li class="breadcrumb-item active" aria-current="page">All Trainings</li>
             </ol>
           </nav>
         </div>
@@ -29,12 +29,8 @@
           <div class="row">
             <div class="col-lg-6">
               <div class="d-flex align-items-center">
-                <div class="view-icons">
-                  <a [routerLink]="routes.page_course_grid" class="grid-view"><i class="feather icon-grid"></i></a>
-                  <a [routerLink]="routes.page_course_list" class="list-view active"><i class="feather icon-list"></i></a>
-                </div>
                 <div class="show-result">
-                  <h4>Showing {{ serialNumberArray[0] }}-{{ serialNumberArray[serialNumberArray.length - 1] }} of 50 results</h4>
+                  <h4>Showing {{ filteredTrainings.length }} results</h4>
                 </div>
               </div>
             </div>
@@ -43,291 +39,194 @@
                 <form action="#">
                   <div class="row gx-2 align-items-center">
                     <div class="col-md-6 col-item">
-                      <div class=" search-group">
+                      <div class="search-group">
                         <i class="feather icon-search"></i>
-                        <input type="text"
-                          [(ngModel)]="searchDataValue"
-                          name="one"
-                          (ngModelChange)="searchData(searchDataValue)"
-                          class="form-control" placeholder="Search our courses" >
-                        </div>
-                      </div>
-                      <div class="col-md-6 col-lg-6 col-item">
-                        <div class="input-block select-form mb-0">
-                          <mat-select class="custom-mat-select" name="sellist1"  [(value)]="selected">
-                            <mat-option value="1">Newly published</mat-option>
-                            <mat-option value="angular">Angular</mat-option>
-                            <mat-option value="nodejs">Node Js</mat-option>
-                            <mat-option value="react">React</mat-option>
-                          </mat-select>
-                        </div>
+                        <input type="text" [(ngModel)]="searchDataValue" name="one" (ngModelChange)="searchData()"
+                          class="form-control" placeholder="Search for trainings">
                       </div>
                     </div>
-                  </form>
-                </div>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
-          <!-- /Filter -->
+        </div>
+        <!-- /Filter -->
 
-          <div class="row">
-            @for (data of courseList; track data) {
+        <!-- Training List -->
+        <div class="row">
+          <div *ngIf="isLoading" class="text-center">
+            <p>Loading trainings...</p>
+          </div>
+
+          <div *ngIf="errorMessage" class="alert alert-danger">
+            {{ errorMessage }}
+          </div>
+
+          <div *ngIf="!isLoading && filteredTrainings.length > 0">
+            <div class="row">
+              @for (training of filteredTrainings; track training) {
               <div class="col-lg-12 col-md-12 d-flex">
                 <div class="course-box course-design list-course d-flex">
                   <div class="product">
-                    <div class="product-img">
-                      <a [routerLink]="routes.page_course_details">
-                        <img class="img-fluid" alt="" [src]="data.img1">
-                      </a>
-                      <div class="price">
-                        <h3>{{data.amount1}} <span>{{data.amount2}}</span></h3>
-                      </div>
-                    </div>
-                    <div class="product-content">
-                      <div class="head-course-title">
-                        <h3 class="title"><a [routerLink]="routes.page_course_details">{{data.content1}}</a></h3>
-                        <div class="all-btn all-category d-flex align-items-center">
-                          <a [routerLink]="routes.page_checkout" class="btn btn-primary">{{data.content2}}</a>
+                    
+                    <div class="product-content row">
+                      <div class="col-md-8">
+                        <div class="head-course-title">
+                          <h3 class="title">
+                            <a [routerLink]="routes.page_course_details">{{ training.title }}</a>
+                          </h3>
+                       
                         </div>
-                      </div>
-                      <div class="course-info border-bottom-0 pb-0 d-flex align-items-center">
-                        <div class="rating-img d-flex align-items-center">
-                          <img [src]="data.img2" alt="">
-                          <p>{{data.lesson}}</p>
+
+                        <div class="course-info border-bottom-0 pb-0 d-flex align-items-center">
+                          <div class="rating-img d-flex align-items-center">
+                            <p><strong>{{ training.typeTraning }}</strong></p>
+
+                          </div>
+                         
                         </div>
-                        <div class="course-view d-flex align-items-center">
-                          <img [src]="data.img3" alt="">
-                          <p>{{data.time}}</p>
-                        </div>
-                      </div>
-                      <div class="rating">
-                        <i class="fas fa-star filled me-1"></i>
-                        <i class="fas fa-star filled me-1"></i>
-                        <i class="fas fa-star filled me-1"></i>
-                        <i class="fas fa-star filled me-1"></i>
-                        <i class="fas fa-star me-1"></i>
-                        <span class="d-inline-block average-rating"><span>{{data.rating1}}</span> {{data.rating2}}</span>
-                      </div>
-                      <div class="course-group d-flex mb-0">
-                        <div class="course-group-img d-flex">
-                          <a [routerLink]="routes.instructor_instructor_profile"><img [src]="data.img4" alt="" class="img-fluid"></a>
-                          <div class="course-name">
-                            <h4><a [routerLink]="routes.instructor_instructor_profile">{{data.name}}</a></h4>
-                            <p>{{data.role}}</p>
+                        <div class="course-info border-bottom-0 pb-0 d-flex align-items-center">
+                          <div class="rating-img d-flex align-items-center">
+                            <p><strong>Courses:</strong> {{ training.courses.length }}</p>
+                            
+                          </div>
+                          <div class="course-view d-flex align-items-center">
+                            <p><strong>Users:</strong> {{ training.users.length }}</p>
                           </div>
                         </div>
-                        <div class="course-share d-flex align-items-center justify-content-center">
-                          <a href="javascript:void(0)" (click)="toggleClass(data)"><i class="fa-heart"  [ngClass]="data.active ? 'fa-solid' : 'fa-regular'"></i></a>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="all-btn all-category d-flex align-items-center item-btns">
+                        
+                          <button type="button" class="btn btn-primary" (click)="openCoursesModal(training)">
+                            Manage courses
+                          </button>
+                          <div class="btns-row row">
+                            <button class="col-md-6 btn-primary btn-sm"  (click)="openEditModal(training)" style="min-width: 80px;">
+                              <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="col-md-6 btn-primary btn-sm"  (click)="deleteTraining(training.id)" style="min-width: 80px;">
+                              
+                              <i class="fas fa-trash"></i>
+                            </button>
+                          </div>
+                         
+                       
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            }
-          </div>
-
-          <!-- /pagination -->
-          <div class="row">
-            <div class="col-md-12">
-              <ul class="pagination lms-page">
-                <li class="page-item prev">
-                  <a class="page-link" href="javascript:void(0)" tabindex="-1"><i class="fas fa-angle-left"></i></a>
-                </li>
-                <li class="page-item first-page active">
-                  <a class="page-link" href="javascript:void(0)">1</a>
-                </li>
-                <li class="page-item">
-                  <a class="page-link" href="javascript:void(0)">2</a>
-                </li>
-                <li class="page-item">
-                  <a class="page-link" href="javascript:void(0)">3</a>
-                </li>
-                <li class="page-item">
-                  <a class="page-link" href="javascript:void(0)">4</a>
-                </li>
-                <li class="page-item">
-                  <a class="page-link" href="javascript:void(0)">5</a>
-                </li>
-                <li class="page-item next">
-                  <a class="page-link" href="javascript:void(0)"><i class="fas fa-angle-right"></i></a>
-                </li>
-              </ul>
+              }
             </div>
           </div>
-          <!-- /pagination -->
 
+          <div *ngIf="!isLoading && filteredTrainings.length === 0" class="text-center">
+            <p>No trainings found.</p>
+          </div>
         </div>
-        <div class="col-lg-3 theiaStickySidebar">
-          <div class="stickybar">
-            <div class="filter-clear">
-              <div class="clear-filter d-flex align-items-center">
-                <h4><i class="feather icon-filter"></i>Filters</h4>
-                <div class="clear-text">
-                  <p>CLEAR</p>
-                </div>
-              </div>
+        <!-- /Training List -->
 
-              <!-- Search Filter -->
-              <div class="card search-filter categories-filter-blk">
-                <div class="card-body">
-                  <div class="filter-widget mb-0">
-                    <div class="categories-head d-flex align-items-center">
-                      <h4>Course categories</h4>
-                      <i class="fas fa-angle-down"></i>
-                    </div>
-                    <div class="form-check">
-                      <label class="form-check-label">
-                        <input class="form-check-input input-box" type="checkbox" name="select_specialist" />
-                        Backend (3)
-                      </label>
-                    </div>
-                    <div class="form-check">
-                      <label class="form-check-label">
-                        <input class="form-check-input input-box" type="checkbox" name="select_specialist" />
-                        CSS (2)
-                      </label>
-                    </div>
-                    <div class="form-check">
-                      <label class="form-check-label">
-                        <input class="form-check-input input-box" type="checkbox" name="select_specialist" />
-                        Frontend (2)
-                      </label>
-                    </div>
-                    <div class="form-check">
-                      <label class="form-check-label">
-                        <input class="form-check-input input-box" type="checkbox" name="select_specialist" />
-                        General (2)
-                      </label>
-                    </div>
-                    <div class="form-check">
-                      <label class="form-check-label">
-                        <input class="form-check-input input-box" type="checkbox" name="select_specialist" />
-                        IT & Software (2)
-                      </label>
-                    </div>
-                    <div class="form-check">
-                      <label class="form-check-label">
-                        <input class="form-check-input input-box" type="checkbox" name="select_specialist" />
-                        Photography (2)
-                      </label>
-                    </div>
-                    <div class="form-check">
-                      <label class="form-check-label">
-                        <input class="form-check-input input-box" type="checkbox" name="select_specialist" />
-                        Programming Language (3)
-                      </label>
-                    </div>
-                    <div class="form-check">
-                      <label class="form-check-label">
-                        <input class="form-check-input input-box" type="checkbox" name="select_specialist" />
-                        Technology (2)
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- /Search Filter -->
-
-              <!-- Search Filter -->
-              <div class="card search-filter">
-                <div class="card-body">
-                  <div class="filter-widget mb-0">
-                    <div class="categories-head d-flex align-items-center">
-                      <h4>Instructors</h4>
-                      <i class="fas fa-angle-down"></i>
-                    </div>
-                    <div class="form-check">
-                      <label class="form-check-label">
-                        <input class="form-check-input input-box" type="checkbox" name="select_specialist" />
-                        Keny White (10)
-                      </label>
-                    </div>
-                    <div class="form-check">
-                      <label class="form-check-label">
-                        <input class="form-check-input input-box" type="checkbox" name="select_specialist" />
-                        Hinata Hyuga (5)
-                      </label>
-                    </div>
-                    <div class="form-check">
-                      <label class="form-check-label">
-                        <input class="form-check-input input-box" type="checkbox" name="select_specialist" />
-                        John Doe (3)
-                      </label>
-                    </div>
-                    <div class="form-check">
-                      <label class="form-check-label">
-                        <input class="form-check-input input-box" type="checkbox" name="select_specialist" />
-                        Nicole Brown
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- /Search Filter -->
-
-              <!-- Search Filter -->
-              <div class="card search-filter ">
-                <div class="card-body">
-                  <div class="filter-widget mb-0">
-                    <div class="categories-head d-flex align-items-center">
-                      <h4>Price</h4>
-                      <i class="fas fa-angle-down"></i>
-                    </div>
-                    <div class="form-check">
-                      <label class="form-check-label">
-                        <input class="form-check-input radio-box" type="checkbox" name="select_specialist" />
-                        All (18)
-                      </label>
-                    </div>
-                    <div class="form-check">
-                      <label class="form-check-label">
-                        <input class="form-check-input radio-box" type="checkbox" name="select_specialist" />
-                        Free (3)
-                      </label>
-                    </div>
-                    <div class="form-check">
-                      <label class="form-check-label">
-                        <input class="form-check-input radio-box" type="checkbox" name="select_specialist" />
-                        Paid (15)
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- /Search Filter -->
-
-              <!-- Latest Posts -->
-              <div class="card post-widget ">
-                <div class="card-body">
-                  <div class="latest-head">
-                    <h4 class="card-title">Latest Courses</h4>
-                  </div>
-                  <ul class="latest-posts">
-                    @for (data of latestCourses; track data) {
-                      <li>
-                        <div class="post-thumb">
-                          <a [routerLink]="routes.page_course_details">
-                            <img class="img-fluid" [src]="data.img" alt="">
-                          </a>
-                        </div>
-                        <div class="post-info" [ngClass]="{'free-color': data.content2 === 'FREE' }"  >
-                          <h4>
-                            <a [routerLink]="routes.page_course_details">{{data.content1}}</a>
-                          </h4>
-                          <p>{{data.content2}}</p>
-                        </div>
-                      </li>
-                    }
-                  </ul>
-                </div>
-              </div>
-              <!-- /Latest Posts -->
-
-            </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- /Course -->
+<!-- Edit Training Modal -->
+<div class="modal fade" id="editTrainingModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Training</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label class="form-label">Title</label>
+            <input type="text" class="form-control" [(ngModel)]="selectedTraining.title" name="title" required />
           </div>
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" [(ngModel)]="selectedTraining.description" name="description"
+              required></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Level</label>
+            <select class="form-select" [(ngModel)]="selectedTraining.level" name="level" required>
+              <option *ngFor="let level of levels" [value]="level">{{ level }}</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Type</label>
+            <select class="form-select" [(ngModel)]="selectedTraining.typeTraning" name="type" required>
+              <option *ngFor="let type of types" [value]="type">{{ type }}</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary modal-btn" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary modal-btn" (click)="saveChanges()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Edit Training Modal -->
+
+<!-- Courses Modal -->
+<!-- Courses Modal -->
+<div class="modal fade" id="coursesModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Manage Courses</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Courses List -->
+        <div *ngIf="selectedTraining?.courses?.length > 0">
+          <ul class="list-group">
+            @for (course of selectedTraining.courses; track course) {
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <a [href]="course.content" target="_blank" class="text-primary text-decoration-none">
+                  {{ course.title }}
+                </a>
+                <button class="btn btn-danger btn-sm" (click)="deleteCourse(course.id)">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </li>
+            }
+          </ul>
+        </div>
+        <div *ngIf="selectedTraining?.courses?.length === 0" class="text-center">
+          <p>No courses available.</p>
+        </div>
+
+        <!-- Add Course Section -->
+        <div class="mt-4">
+          <h6>Add a New Course</h6>
+          <div class="input-group mb-2">
+            <input type="text" class="form-control" placeholder="Course Title" [(ngModel)]="newCourseTitle">
+          </div>
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Course Link (URL)" [(ngModel)]="newCourseLink">
+            <button class="btn btn-primary" (click)="addCourse()" [disabled]="isAddingCourse">
+              {{ isAddingCourse ? 'Adding...' : 'Add' }}
+            </button>
+          </div>
+          <div *ngIf="courseError" class="text-danger mt-2">{{ courseError }}</div>
         </div>
       </div>
     </div>
-  </section>
-  <!-- /Course -->
+  </div>
+</div>
+<!-- /Courses Modal -->
+
+<!-- /Courses Modal -->
