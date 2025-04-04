@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { DataService } from 'src/app/shared/service/data/data.service';
-import { MatTableDataSource } from '@angular/material/table';
 import { routes } from 'src/app/shared/service/routes/routes';
-import { courseList, latestCourses } from 'src/app/models/model';
+import { TrainingService } from 'src/app/shared/service/TrainingPlan/training.service';
+declare var bootstrap: any;
 interface data {
   active?: boolean;
 }
@@ -12,112 +11,163 @@ interface data {
   styleUrls: ['./course-list.component.scss'],
 })
 export class CourseListComponent implements OnInit {
-  public routes = routes;
-  selected = '1';
-  public searchDataValue = '';
-  dataSource!: MatTableDataSource<courseList>;
+  trainings: any[] = [];
+  filteredTrainings: any[] = [];
+  isLoading: boolean = false;
+  errorMessage: string = '';
+  searchDataValue: string = '';
+  routes = routes;
+  selectedTraining: any = {};
+  newCourseTitle: string = ''; 
+  newCourseLink: string = '';
+  courseError: string = ''; 
+  isAddingCourse: boolean = false;
+  levels = ['Beginner', 'Intermediate', 'Advanced', 'Expert'];
+  types = ['ONLINE', 'VIDEO'];
 
-  // pagination variables
-  public lastIndex = 0;
-  public pageSize = 10;
-  public totalData = 0;
-  public skip = 0;
-  public limit: number = this.pageSize;
-  public pageIndex = 0;
-  public serialNumberArray: Array<number> = [];
-  public currentPage = 1;
-  public pageNumberArray: Array<number> = [];
-  public pageSelection: Array<pageSelection> = [];
-  public totalPages = 0;
-  public courseList: courseList[] = [];
-  public latestCourses: latestCourses[] = [];
 
-  constructor(private data: DataService) {
-    // this.courseList = this.data.courseList;
-    this.latestCourses = this.data.latestCourses;
-  }
+  constructor(private trainingService: TrainingService) {}
 
   ngOnInit(): void {
-    this.getcourseList();
+    this.fetchTrainings();
   }
-  private getcourseList(): void {
-    this.courseList = [];
-    this.serialNumberArray = [];
 
-    this.data.allCourseList().subscribe((res: courseList) => {
-      this.totalData = res.totalData;
-      res.data.map((res: courseList, index: number) => {
-        const serialNumber = index + 1;
-        if (index >= this.skip && serialNumber <= this.limit) {
-          res.totalData = serialNumber;
-          this.courseList.push(res);
-          this.serialNumberArray.push(serialNumber);
+  fetchTrainings() {
+    this.isLoading = true;
+    this.trainingService.getTrainingsForAuthenticatedTrainer().subscribe(
+      (data) => {
+        this.trainings = data;
+        this.filteredTrainings = data;
+        this.isLoading = false;
+      },
+      (error) => {
+        this.errorMessage = 'Failed to load trainings. Please try again.';
+        this.isLoading = false;
+      }
+    );
+  }
+
+  searchData() {
+    if (!this.searchDataValue.trim()) {
+      this.filteredTrainings = this.trainings;
+    } else {
+      this.filteredTrainings = this.trainings.filter(training =>
+        training.title.toLowerCase().includes(this.searchDataValue.toLowerCase()) ||
+        training.level.toLowerCase().includes(this.searchDataValue.toLowerCase()) ||
+        training.typeTraning.toLowerCase().includes(this.searchDataValue.toLowerCase()) ||
+        training.description.toLowerCase().includes(this.searchDataValue.toLowerCase())
+      );
+    }
+  }
+
+  openEditModal(training: any) {
+    this.selectedTraining = { ...training }; // Copy selected training to avoid modifying the list directly
+    const modal = new bootstrap.Modal(document.getElementById('editTrainingModal'));
+    modal.show();
+  }
+
+  saveChanges() {
+    if (!this.selectedTraining.id) return;
+
+    this.trainingService.updateTraining(this.selectedTraining.id, this.selectedTraining).subscribe(
+      (response) => {
+        console.log('Training updated successfully:', response);
+        
+        // Update the local training list
+        const index = this.trainings.findIndex(t => t.id === this.selectedTraining.id);
+        if (index !== -1) {
+          this.trainings[index] = { ...this.selectedTraining };
+          this.filteredTrainings[index] = { ...this.selectedTraining };
         }
-      });
-      this.dataSource = new MatTableDataSource<courseList>(this.courseList);
-      this.calculateTotalPages(this.totalData, this.pageSize);
-    });
+
+        // Close the modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('editTrainingModal'));
+        modal.hide();
+      },
+      (error) => {
+        console.error('Error updating training:', error);
+      }
+    );
+  }
+  openCoursesModal(training: any) {
+    this.selectedTraining = { ...training }; // Copy training object
+    this.newCourseTitle = ''; // Clear inputs
+    this.newCourseLink = '';
+    this.courseError = '';
+    const modal = new bootstrap.Modal(document.getElementById('coursesModal'));
+    modal.show();
   }
 
-  public searchData(value: string): void {
-    this.dataSource.filter = value.trim().toLowerCase();
-    this.courseList = this.dataSource.filteredData;
-  }
+  addCourse() {
+    if (this.isAddingCourse) return;
+    this.courseError = '';
 
-  public getMoreData(event: string): void {
-    if (event == 'next') {
-      this.currentPage++;
-      this.pageIndex = this.currentPage - 1;
-      this.limit += this.pageSize;
-      this.skip = this.pageSize * this.pageIndex;
-      this.getcourseList();
-    } else if (event == 'previous') {
-      this.currentPage--;
-      this.pageIndex = this.currentPage - 1;
-      this.limit -= this.pageSize;
-      this.skip = this.pageSize * this.pageIndex;
-      this.getcourseList();
+    if (!this.newCourseTitle.trim()) {
+      this.courseError = 'Course title is required.';
+      return;
     }
+
+    if (!this.isValidUrl(this.newCourseLink)) {
+      this.courseError = 'Please enter a valid URL.';
+      return;
+    }
+
+    const newCourse = {
+      title: this.newCourseTitle,
+      content: this.newCourseLink,
+    };
+
+    this.isAddingCourse = true;
+    this.trainingService.createCourse(this.selectedTraining.id, newCourse).subscribe(
+      (response) => {
+        this.selectedTraining.courses.push(response); // Update UI with newly created course
+        this.newCourseTitle = '';
+        this.newCourseLink = '';
+        this.isAddingCourse = false;
+      },
+      (error) => {
+        this.courseError = 'Failed to add course. Try again.';
+        this.isAddingCourse = false;
+      }
+    );
   }
 
-  public moveToPage(pageNumber: number): void {
-    this.currentPage = pageNumber;
-    this.skip = this.pageSelection[pageNumber - 1].skip;
-    this.limit = this.pageSelection[pageNumber - 1].limit;
-    if (pageNumber > this.currentPage) {
-      this.pageIndex = pageNumber - 1;
-    } else if (pageNumber < this.currentPage) {
-      this.pageIndex = pageNumber + 1;
-    }
-    this.getcourseList();
+  isValidUrl(url: string): boolean {
+    const pattern = new RegExp(
+      '^(https?:\\/\\/)?' + 
+      '((([a-zA-Z\\d]([a-zA-Z\\d-]*[a-zA-Z\\d])*)\\.)+[a-zA-Z]{2,}|' + 
+      '((\\d{1,3}\\.){3}\\d{1,3}))' +
+      '(\\:\\d+)?(\\/[-a-zA-Z\\d%@_.~+&:]*)*' +
+      '(\\?[;&a-zA-Z\\d%@_.,~+&:=-]*)?' + 
+      '(\\#[-a-zA-Z\\d_]*)?$', 'i'
+    );
+    return !!pattern.test(url);
   }
 
-  public changePageSize(): void {
-    this.pageSelection = [];
-    this.limit = this.pageSize;
-    this.skip = 0;
-    this.currentPage = 1;
-    this.getcourseList();
+  deleteCourse(courseId: number) {
+    if (!confirm('Are you sure you want to delete this course?')) return;
+
+    this.trainingService.deleteCourse(courseId).subscribe(
+      () => {
+        this.selectedTraining.courses = this.selectedTraining.courses.filter((course: { id: number; }) => course.id !== courseId);
+      },
+      (error) => {
+        console.error('Error deleting course:', error);
+      }
+    );
   }
 
-  private calculateTotalPages(totalData: number, pageSize: number): void {
-    this.pageNumberArray = [];
-    this.totalPages = totalData / pageSize;
-    if (this.totalPages % 1 != 0) {
-      this.totalPages = Math.trunc(this.totalPages + 1);
-    }
-    for (let i = 1; i <= this.totalPages; i++) {
-      const limit = pageSize * i;
-      const skip = limit - pageSize;
-      this.pageNumberArray.push(i);
-      this.pageSelection.push({ skip: skip, limit: limit });
-    }
+  deleteTraining(id: number) {
+    if (!confirm('Are you sure you want to delete this training?')) return;
+
+    this.trainingService.deleteTraining(id).subscribe(
+      () => {
+        this.filteredTrainings = this.filteredTrainings.filter((training: { id: number; }) => training.id !== id);
+      },
+      (error) => {
+        console.error('Error deleting course:', error);
+      }
+    );
   }
-  toggleClass(data: data) {
-    data.active = !data.active;
-  }
-}
-export interface pageSelection {
-  skip: number;
-  limit: number;
+
 }
