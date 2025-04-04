@@ -1,0 +1,7 @@
+<h2>Liste des formations</h2>
+<ul>
+  <li *ngFor="let training of trainings">
+    {{ training.title }} - {{ training.level }}
+    <button (click)="deleteTraining(training.id)" class="btn btn-danger">Supprimer</button>
+  </li>
+</ul>
