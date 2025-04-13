@@ -33,7 +33,7 @@ export class TrainingService {
 
 
   updateTraining(trainingId: number, updatedTraining: any): Observable<any> {
-    const headers = this.getHeaders();
+    const headers = this.getHeaders();    
     return this.http.put(`http://localhost:8076/moderator/ModifyTrainingAndCourse/${trainingId}`, updatedTraining, { headers });
   }
 

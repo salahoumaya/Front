@@ -116,12 +116,11 @@ export class StudentCoursesComponent {
 
         this.fetchCourses();
 
-        console.log(this.selectedTraining);
+        // console.log(this.selectedTraining);
 
-        // ✅ Correction ici :
-        if (this.selectedTraining.plannings?.length > 0) {
-          this.downloadPlanningPDF(this.selectedTraining.plannings[0]);
-        }
+        // if (this.selectedTraining.plannings?.length > 0) {
+        //   this.downloadPlanningPDF(this.selectedTraining.plannings[0]);
+        // }
       },
       (error) => {
         console.error('Subscription failed:', error);
@@ -130,7 +129,10 @@ export class StudentCoursesComponent {
     );
   }
 
+
     downloadPlanningPDF(planning: any) {
+      console.log(planning);
+      
       const doc = new jsPDF();
 
       // Title
