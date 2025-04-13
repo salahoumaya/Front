@@ -40,14 +40,25 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let reclamation of getFilteredReclamations(type)">
-                    <td>{{ reclamation.title }}</td>
+                  <tr *ngFor="let reclamation of getFilteredReclamations(type)"
+                      [ngClass]="{ 'bg-light-danger': reclamation.sentiment === 'NEGATIVE' }">
+                    <td>
+                      {{ reclamation.title }}
+                      <span *ngIf="reclamation.autoProcessed" class="badge bg-info text-dark ms-1"></span>
+                      <span *ngIf="reclamation.sentiment === 'NEGATIVE'" class="badge bg-danger ms-1"></span>
+                    </td>
                     <td>{{ reclamation.user?.email || '-' }}</td>
                     <td>
                       <span class="badge" [ngClass]="statusClass(reclamation.status)">
                         {{ reclamation.status }}
                       </span>
+                      <!-- ✅ Affiche "Prioritaire" uniquement si auto traitée ET statut toujours en cours -->
+                      <span *ngIf="reclamation.autoProcessed && (reclamation.status === 'OPEN' || reclamation.status === 'IN_PROGRESS')"
+                            class="badge bg-danger ms-2">
+                        Prioritaire 🔥
+                      </span>
                     </td>
+
                     <td class="d-flex justify-content-around">
                       <button class="btn btn-outline-primary btn-sm" (click)="selectReclamation(reclamation)">
                         <i class="fas fa-eye"></i>
@@ -58,6 +69,7 @@
                     </td>
                   </tr>
                 </tbody>
+
               </table>
 
               <!-- Pagination -->

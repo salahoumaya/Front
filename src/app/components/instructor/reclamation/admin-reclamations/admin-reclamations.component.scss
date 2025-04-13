@@ -147,3 +147,24 @@ input.form-control-sm {
   position: relative;
   z-index: 1;
 }
+
+.bg-light-danger {
+  background-color: #fff4f4 !important;
+}
+
+.badge {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+.badge.bg-info {
+  background-color: #d6effb;
+  color: #096b9d;
+}
+
+.badge.bg-danger {
+  background-color: #fde2e2;
+  color: #a80000;
+}
+

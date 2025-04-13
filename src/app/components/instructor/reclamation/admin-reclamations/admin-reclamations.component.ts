@@ -18,6 +18,9 @@ export class AdminReclamationsComponent implements OnInit {
 
 
 
+
+
+
   constructor(private adminReclamationService: ReclamationService) {}
 
   ngOnInit(): void {
