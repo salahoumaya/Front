@@ -5,6 +5,7 @@ import { TrainingService } from 'src/app/shared/service/TrainingPlan/training.se
 declare var bootstrap: any;
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-student-courses',
 
@@ -26,7 +27,7 @@ export class StudentCoursesComponent {
   itemsPerPage: number = 6;
   totalPages: number = 0;
 
-  constructor(private trainingService: TrainingService) {}
+  constructor(private trainingService: TrainingService,private router : Router) {}
 
   ngOnInit(): void {
     this.fetchCourses();
@@ -114,8 +115,8 @@ export class StudentCoursesComponent {
         const modal = bootstrap.Modal.getInstance(document.getElementById('subscribeModal'));
         modal.hide();
 
-        this.fetchCourses();
-
+        this.router.navigate(['/student/student-order-history']);
+        
         // console.log(this.selectedTraining);
 
         // if (this.selectedTraining.plannings?.length > 0) {
