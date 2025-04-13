@@ -4,6 +4,7 @@ import { routes } from 'src/app/shared/service/routes/routes';
 import { TrainingService } from 'src/app/shared/service/TrainingPlan/training.service';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { Router } from '@angular/router';
 
 interface PlanningDay {
   day: string;
@@ -59,7 +60,8 @@ export class SupportComponent implements OnInit {
 
   constructor(
     private trainingService: TrainingService,
-    private http: HttpClient
+    private http: HttpClient,
+    private router : Router
   ) {}
 
   ngOnInit(): void {
@@ -147,6 +149,7 @@ export class SupportComponent implements OnInit {
     this.trainingService.addPlanning(formattedPlanning).subscribe(
       (data) => {
         alert("Planning created successfully!");
+        this.router.navigate(['/moderator/CourseList']);
       },
       (error) => {
         console.log(error);
