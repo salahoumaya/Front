@@ -1,0 +1,242 @@
+<!-- Page Content -->
+<div class="page-content">
+  <div class="container">
+    <div class="row">
+
+      <!-- sidebar -->
+      <app-student-sidebar class="col-xl-3 col-lg-3 theiaStickySidebar"></app-student-sidebar>
+      <!-- /Sidebar -->
+
+      <!-- Student forums -->
+      <div class="col-xl-9 col-lg-9">
+
+        <div class="settings-widget card-details">
+          <div class="settings-menu p-0">
+            <div class="profile-heading">
+              <h3>Forums</h3>
+            </div>
+            <div class="checkout-form">
+
+              <div class="filter-grp ticket-grp d-flex align-items-center justify-content-between">
+                <div>
+                  <h3>Forums</h3>
+                  <p>You can find all of your forums.</p>
+                </div>
+                <div class="ticket-btn-grp">
+                  <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#add-tickets">Add New Post</a>
+                </div>
+              </div>
+
+              <div class="wishlist-tab">
+                <ul class="nav">
+                  <li class="nav-item">
+                    <a href="javascript:void(0);" class="active" data-bs-toggle="tab"
+                       data-bs-target="#all">All({{postCount}})</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="javascript:void(0);" data-bs-toggle="tab" data-bs-target="#open">My
+                      posts({{filteredPosts.length}})</a>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Tab Contant -->
+              <div class="tab-content">
+
+                <!-- All -->
+                <div class="tab-pane show active" id="all">
+                  <div class="table-responsive custom-table">
+
+                    <!-- Referred Users-->
+                    <table class="table table-nowrap mb-0">
+                      <thead>
+                      <tr>
+                        <th>Title</th>
+                        <th>Creation Date</th>
+                        <th>Content</th>
+                        <th>Author</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                      </thead>
+                      <tbody *ngIf="posts?.length; else noPosts">
+                      <tr *ngFor="let post of posts">
+
+                        <td>{{ post.title }}</td>
+                        <td>{{ post.createdAt ? (post.createdAt | date: 'mediumDate') : 'N/A' }}</td>
+                        <td>{{ stripHtmlTags(post.content) }}</td>
+                        <td>{{ post.author.name }}</td>
+                        <td>{{ post.category }}</td>
+                        <td>
+                          <span
+                            class="status-badge"
+                            [ngClass]="(post.comments?.length) ? 'badge-soft-success' : 'badge-soft-danger'">
+
+                            <span *ngIf="post.comments?.length">Discussed</span>
+                            <span *ngIf="!post.comments?.length">No Activity</span>
+
+                            </span>
+                        </td>
+                        <td>
+                          <div class="d-flex align-items-center">
+                            <a [routerLink]="['/student/student-forums', post.id]"
+                               class="btn btn-light-danger quiz-view">Details</a>
+                            <span class="ms-3" *ngIf="post.author?.id === userId">
+      <i class="bx bx-trash" style="cursor:pointer;" (click)="deletePost(post.id)"></i>
+    </span>
+                          </div>
+                        </td>
+                      </tr>
+                      </tbody>
+                      <ng-template #noPosts>
+                        <tr>
+                          <td colspan="7" class="text-center text-muted">No forum posts available.</td>
+                        </tr>
+                      </ng-template>
+
+                    </table>
+                  </div>
+                </div>
+                <!-- /All -->
+
+                <!-- Open -->
+                <div class="tab-pane fade" id="open">
+                  <div class="table-responsive custom-table">
+
+                    <!-- Referred Users-->
+                    <table class="table table-nowrap mb-0">
+                      <thead>
+                      <tr>
+                        <th>Title</th>
+                        <th>Creation Date</th>
+                        <th>Category</th>
+                        <th>Content</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let post of filteredPosts">
+                        <td>{{ post.title }}</td>
+                        <td>{{ post.createdAt ? (post.createdAt | date: 'mediumDate') : 'N/A' }}</td>
+                        <td>{{ stripHtmlTags(post.content) }}</td>
+                        <td>{{ post.category }}</td>
+                        <td>
+                          <span
+                            class="status-badge"
+                            [ngClass]="(post.comments?.length) ? 'badge-soft-success' : 'badge-soft-danger'">
+
+                              <a [routerLink]="['/student/student-forums', post.id]"
+                                 *ngIf="post.comments?.length">Show Details</a>
+                             <span *ngIf="!post.comments?.length">No Activity</span>
+
+                            </span>
+                        </td>
+                        <td>
+                          <div class="d-flex align-items-center">
+                            <a [routerLink]="['/student/student-forums', post.id]"
+                               class="btn btn-light-danger quiz-view">Details</a>
+                            <span class="ms-3" *ngIf="post.author?.id === userId">
+      <i class="bx bx-trash" style="cursor:pointer;" (click)="deletePost(post.id)"></i>
+    </span>
+                          </div>
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <!-- /Open -->
+
+              </div>
+              <!-- Tab Contant -->
+
+            </div>
+          </div>
+        </div>
+
+        <div class="dash-pagination">
+          <div class="row align-items-center">
+            <div class="col-6">
+              <p>Page 1 of 2</p>
+            </div>
+            <div class="col-6">
+              <ul class="pagination">
+                <li class="active">
+                  <a href="javascript:void(0);">1</a>
+                </li>
+                <li>
+                  <a href="javascript:void(0);">2</a>
+                </li>
+                <li>
+                  <a href="javascript:void(0);"><i class="bx bx-chevron-right"></i></a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Student Tickets -->
+
+    </div>
+  </div>
+</div>
+<!-- /Page Content -->
+
+<!-- Modal -->
+<div class="modal fade" id="add-tickets">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="page-wrapper-new p-0">
+        <div class="modal-header border-0 custom-modal-header">
+          <div class="page-title">
+            <h4>Add New Post</h4>
+          </div>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <i class="feather icon-x"></i>
+          </button>
+        </div>
+        <div class="modal-body custom-modal-body">
+          <form (ngSubmit)="createPost()">
+            <div class="tickets-add-list">
+              <div class="settings-inner-blk add-course-info p-0">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="input-block">
+                      <label class="form-label" for="title">Title</label>
+                      <input type="text" class="form-control" id="title" [(ngModel)]="newPost.title" name="title"
+                             required>
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="input-block">
+                      <label class="form-label" for="content">Content</label>
+                      <p-editor [(ngModel)]="newPost.content" name="content" [style]="{ height: '100px' }"></p-editor>
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="input-block">
+                      <label class="form-label" for="category">Category</label>
+                      <select class="form-select" id="category" [(ngModel)]="newPost.category" name="category" required>
+                        <option value="GENERAL">General</option>
+                        <option value="QUESTION">Question</option>
+                        <option value="ANNOUNCEMENT">Announcement</option>
+                        <option value="HELP_REQUEST">Help</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer-btn">
+              <button type="submit" class="btn btn-primary">Submit</button>
+              <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

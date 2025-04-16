@@ -1,0 +1,109 @@
+
+<!-- Page Content -->
+<div class="page-content">
+  <div class="container">
+      <div class="row">
+          
+          <!-- sidebar -->
+
+          <div class="col-xl-9 col-lg-9">
+            <section class="course-content">
+              <div class="container">
+                <div class="row">
+                  <div class="col-lg-12 col-md-12">
+                   
+                   
+                    
+                    <div >
+                      <h2 class="text-danger"> LIST FORMATIONS</h2>
+                      <div *ngIf="formationsall.length === 0" class="text-center">
+                        <p>Aucune Formation</p>
+                      </div>
+                      <ng-container *ngIf="!showCourses">
+                        <div class="row">
+                          <div class="col-md-6 mb-3" *ngFor="let formation of formationsall">
+                            <div class="card shadow h-100">
+                              <div class="card-body">
+                                <h5 class="card-title">{{ formation.title }}</h5>
+                                <p>{{ formation.description }}</p>
+                                <p><strong>Niveau :</strong> {{ formation.level }}</p>
+                                <p><strong>Type :</strong> {{ formation.typeTraning }}</p>
+                                <!-- <button class="btn btn-warning me-2" (click)="calculmoyenne(formation.id)">Moyenne</button> -->
+                                <button class="btn btn-warning me-2" data-bs-toggle="modal" href="#userMoyenneModal"  (click)="getusersmoy(formation.id)">List Moyenne</button>
+
+                                <button class="btn btn-warning me-2" (click)="getCourses(formation.id)">Course</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </ng-container>
+                      
+          
+                      <!-- Cours affichés après sélection -->
+                      <ng-container *ngIf="showCourses">
+                        <h2 class="text-primary mb-3">Cours liés à la formation</h2>
+                        <div class="d-flex flex-row overflow-auto">
+                          <div class="card shadow m-2" style="min-width: 300px;" *ngFor="let item of courses">
+                            <div class="card-body">
+                              <h5 class="card-title">{{ item.title }}</h5>
+                              <p class="card-text">{{ item.content }}</p>
+                              <button class="btn btn-warning me-2" [routerLink]="'/moderator/examen/' + item.id">Examen</button>
+                            </div>
+                          </div>
+                        </div>
+                        <button class="btn btn-outline-secondary mt-3" (click)="cancelCoursesView()">Retour</button>
+                      </ng-container>
+                     <!-- Modal -->
+<div class="modal fade" id="userMoyenneModal" tabindex="-1" aria-labelledby="userMoyenneModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content shadow">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="userMoyenneModalLabel">Utilisateurs avec leur Moyenne</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="userMoyennes.length > 0">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Moyenne</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of userMoyennes; index as i">
+                <td>{{ i + 1 }}</td>
+                <td>{{ user.nom }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.moyenne | number:'1.2-2' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div *ngIf="userMoyennes.length === 0">
+          <p class="text-center text-muted">Aucun utilisateur trouvé pour cette formation.</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+                    </div>
+                 
+          
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+          <!-- /Instructor Quiz -->
+
+      </div>
+  </div>
+</div>	
+<!-- /Page Content -->
